@@ -1,8 +1,46 @@
+import tkinter as tk					
 from tkinter import *
-import tkinter as tk
+from tkinter import ttk
 import os
 import subprocess
 import threading
+
+
+
+
+root = tk.Tk()
+root.title("Server Manager")
+root.geometry('677x343')
+tabControl = ttk.Notebook(root)
+frame = tk.Frame(root)
+frame.pack()
+
+
+
+
+
+
+
+tab1 = ttk.Frame(tabControl)
+tab2 = ttk.Frame(tabControl)
+
+tabControl.add(tab1, text ='Control')
+tabControl.add(tab2, text ='Config')
+tabControl.pack(expand = 1, fill ="both")
+
+ttk.Label(tab1,
+		text ="").grid(column = 0,
+							row = 0,
+							padx = 30,
+							pady = 30)
+ttk.Label(tab2,
+		text ="").grid(column = 0,
+									row = 0,
+									padx = 30,
+									pady = 30)
+
+
+
 
 def compile_terminal_command(terminal_command, last_line_index) :
     # The last line index stores the line where the command thread has to output in the listbox
@@ -81,13 +119,9 @@ def terminal_backspace_callback() :
     refresh_terminal(backspace = True)
     return
 
-root = tk.Tk()
 
 
-root.title('Command Prompt')
-root.geometry('633x400')
-
-# Making a fra, this terminal frame can be packed or used as a toplevel window instead.
+# Making a frame, this terminal frame can be packed or used as a toplevel window instead.
 terminal = tk.Frame(root, bg = 'black')
 
 # Initializing a listbox to act as terminal with bg and fg of your own choice.
@@ -104,7 +138,7 @@ terminal_listbox.pack(expand = True, fill = tk.BOTH)
 terminal.pack(expand = True, fill = tk.BOTH)
 
 # Inserting the copyright thingy.
-terminal_listbox.insert(tk.END, 'Tkinter Terminal')
+terminal_listbox.insert(tk.END, 'AMP Server Manager Terminal')
 terminal_listbox.insert(tk.END, '© Copyright blah blah')
 terminal_listbox.insert(tk.END, 'By flexhd')
 
@@ -201,3 +235,5 @@ terminal_listbox.bind('<space>', lambda x : append_to_terminal_text(' '))
 # Not all keys have been binded here as its a demonstration but as per need all can be binded.
 
 root.mainloop()
+
+
