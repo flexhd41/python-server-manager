@@ -108,8 +108,8 @@ button= ttk.Button(root, text="Enter",)
 button.pack(side=RIGHT)
 E1 = Entry(root, textvariable=Port, bd =4)
 E1.pack(side = RIGHT)
-E1 = Entry(root, textvariable=Maxplayers,  bd =4)
-E1.pack(side = RIGHT)
+E2 = Entry(root, textvariable=Maxplayers,  bd =4)
+E2.pack(side = RIGHT)
 
 
 
