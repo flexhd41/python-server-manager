@@ -64,10 +64,11 @@ def test():
             print(msg)
 
     print("Thread: end")
-
+Port = StringVar()
+Maxplayers = StringVar()
 def start():
     print("Starting server")
-    p = subprocess.Popen("AMP_Server.exe {} {}".split(), stdout=subprocess.PIPE, bufsize=1, text=True .format(Port, Max-players))
+    p = subprocess.Popen("AMP_Server.exe {} {}".split(), stdout=subprocess.PIPE, bufsize=1, text=True).format(Port, Maxplayers)
     while p.poll() is None:
         msg = p.stdout.readline().strip() # read a line from the process output
         if msg:
@@ -107,7 +108,7 @@ button= ttk.Button(root, text="Enter",)
 button.pack(side=RIGHT)
 E1 = Entry(root, textvariable=Port, bd =4)
 E1.pack(side = RIGHT)
-E1 = Entry(root, textvariable=Max-players,  bd =4)
+E1 = Entry(root, textvariable=Maxplayers,  bd =4)
 E1.pack(side = RIGHT)
 
 
