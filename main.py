@@ -1,120 +1,79 @@
-import tkinter as tk					
-from tkinter import *
-from tkinter import ttk
-import os
 import subprocess
-import threading
-import sys
-def handleTabChange(event):
-    if notebook.select() == notebook.tabs()[-1]:
-        index = len(notebook.tabs())-1
-        frame = tk.Frame(notebook)
-        notebook.insert(index, frame, text="<untitled>")
-        notebook.select(index)
+import tkinter as tk
 
+# Create the main window
+window = tk.Tk()
+window.title("Server Manager")
 
+# Create a function to start the server process
+def start_server():
+    global server_process
+    # Get the maximum number of players and port number from the input fields
+    max_players = max_players_field.get()
+    port = port_field.get()
+    # Start the server with the specified maximum number of players and port number
+    server_process = subprocess.Popen(f"cmd.exe {max_players} {port}", stdout=subprocess.PIPE)
+    while True:
+        output = server_process.stdout.readline()
+        output_text.insert('end', output)
+        output_text.see('end')
+        if not output:
+            break
 
-root = tk.Tk()
-root.title("Server Manager")
-root.geometry('1000x400')
-#tabControl = ttk.Notebook(root)
-frame = tk.Frame(root)
-frame.pack()
-#notebook = ttk.Notebook(root)
-#notebook.bind("<<NotebookTabChanged>>", handleTabChange)
+# Create a button to start the server process
+start_button = tk.Button(text="Start Server", command=start_server)
+start_button.pack()
 
-#notebook.pack(fill="both", expand=True)
+# Create a function to stop the server process
+def stop_server():
+    server_process.kill()
 
+# Create a button to stop the server process
+stop_button = tk.Button(text="Stop Server", command=stop_server)
+stop_button.pack()
 
-#add a tab that creates new tabs when selected
-#frame = tk.Frame()
-#notebook.add(frame, text="+")
+# Create a function to restart the server process
+def restart_server():
+    stop_server()
+    start_server()
 
+# Create a button to restart the server process
+restart_button = tk.Button(text="Restart Server", command=restart_server)
+restart_button.pack()
 
+# Create a function to send a custom input to the server process
+def send_input():
+    input_text = input_field.get()
+    server_process.stdin.write(input_text + '\n')
 
+# Create a custom input field
+input_field = tk.Entry()
+input_field.pack()
 
-# --- classes ---
+# Create a button to send the custom input
+input_button = tk.Button(text="Send Input", command=send_input)
+input_button.pack()
 
-class Redirect():
+# Create input fields for the maximum number of players and port number
+max_players_label = tk.Label(text="Max Players:")
+max_players_label.pack()
+max_players_field = tk.Entry()
+max_players_field.pack()
 
-    def __init__(self, widget, autoscroll=True):
-        self.widget = widget
-        self.autoscroll = autoscroll
+port_label = tk.Label(text="Port:")
+port_label.pack()
+port_field = tk.Entry()
+port_field.pack()
 
-    def write(self, text):
-        self.widget.insert('end', text)
-        if self.autoscroll:
-            self.widget.see("end")  # autoscroll
-        
-    #def flush(self):
-    #    pass
+# Create a text widget to display the output of the cmd process
+output_text = tk.Text(window)
+output_text.pack()
 
-# --- functions ---
-
-def run():
-    threading.Thread(target=test).start()
-
-def test():
-    print("Thread: start")
-
-    p = subprocess.Popen("ping -c 4 stackoverflow.com".split(), stdout=subprocess.PIPE, bufsize=1, text=True)
-    while p.poll() is None:
-        msg = p.stdout.readline().strip() # read a line from the process output
-        if msg:
-            print(msg)
-
-    print("Thread: end")
-Port = StringVar()
-Maxplayers = StringVar()
-def start():
-    print("Starting server")
-    p = subprocess.Popen("AMP_Server.exe {} {}".split(), stdout=subprocess.PIPE, bufsize=1, text=True).format(Port, Maxplayers)
-    while p.poll() is None:
-        msg = p.stdout.readline().strip() # read a line from the process output
-        if msg:
-            print(msg)
-
-
-# --- main ---    
-
-
-
-# - Frame with Text and Scrollbar -
-
-frame = tk.Frame(root)
-frame.pack(expand=True, fill='both')
-
-text = tk.Text(frame)
-text.pack(side='left', fill='both', expand=True)
-
-scrollbar = tk.Scrollbar(frame)
+# Create a scroll bar for the text widget
+scrollbar = tk.Scrollbar(output_text)
 scrollbar.pack(side='right', fill='y')
+scrollbar.config(command=output_text.yview)
+output_text.config(yscrollcommand=scrollbar.set)
 
-text['yscrollcommand'] = scrollbar.set
-scrollbar['command'] = text.yview
-
-old_stdout = sys.stdout    
-sys.stdout = Redirect(text)
-
-# - rest -
-
-button = tk.Button(root, text='Start', command=start)
-button.pack(side=LEFT)
-button = tk.Button(root, text='Stop', command=run)
-button.pack(side=LEFT)
-button = tk.Button(root, text='Restart', command=run)
-button.pack(side=LEFT)
-button= ttk.Button(root, text="Enter",)
-button.pack(side=RIGHT)
-E1 = Entry(root, textvariable=Port, bd =4)
-E1.pack(side = RIGHT)
-E2 = Entry(root, textvariable=Maxplayers,  bd =4)
-E2.pack(side = RIGHT)
-
-
-
-root.mainloop()
-
-# - after close window -
-
-sys.stdout = old_stdout
+# Run the main loop
+window.mainloop()
